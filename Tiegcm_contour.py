@@ -10,8 +10,8 @@ import numpy as np
 import math
 import matplotlib
 
-data = np.loadtxt("O1_N2_400km_pdrag_den.txt",delimiter=',')
-data = np.log10(data)
+data = np.loadtxt("He_400km_pdrag_TEST_DELETE.txt",delimiter=',')
+#data = np.log10(data)
 x = np.linspace(0,143/6, 144)
 y = np.linspace(-88.75,88.75,72)
 X, Y = np.meshgrid(x, y)

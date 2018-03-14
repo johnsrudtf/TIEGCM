@@ -133,7 +133,8 @@ mHe = [left,right];
 maxHe = max(max(mHe));
 minHe = min(min(mHe));
 rangeHe = maxHe-minHe;
-He_normalized = (mHe-minHe)./rangeHe;
+mid_He = (maxHe+minHe)/2;
+He_normalized = (mHe-mid_He)./rangeHe*2;%Scale data to between -1 and 1
 mHelog = log10(mHe);
 
 mN2 = N2.*Den*1000;%kg/m^3
@@ -144,7 +145,8 @@ mN2 = [left,right];
 maxN2 = max(max(mN2));
 minN2 = min(min(mN2));
 rangeN2 = maxN2-minN2;
-N2_normalized = (mN2-minN2)./rangeN2;
+mid_N2 = (maxN2+minN2)/2;
+N2_normalized = (mN2-mid_N2)./rangeN2*2;
 mN2log = log10(mN2);
 
 mO1 = O1.*Den*1000;% Density kg/m^3 
@@ -158,7 +160,7 @@ oxy_ratio = mO1./mN2;
 normal_he_n2 = He_normalized./N2_normalized;
 normal_he_tn = He_normalized./Tn_normalized;
 
-dlmwrite(['He_N2_400km_',id,'_normalized.txt'],normal_he_n2);
+dlmwrite(['He_400km_',id,'_TEST_DELETE.txt'],He_normalized);
 
 %Correlation
 CorrN2 = xcorr2(He_normalized, N2_normalized);
