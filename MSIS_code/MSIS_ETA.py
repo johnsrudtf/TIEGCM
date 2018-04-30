@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Apr 11 12:06:48 2018
-
+Plots the ETA of MSIS outputs over given longitude from latitude of -60 to 60
 @author: tojo5760
 """
 
@@ -27,16 +27,18 @@ data = np.zeros(121)
 marklon = 0
 latitudes = range(-60,61,1)
 
+#Run MSIS for range of latitudes
 for Lat in range(-60,61,1) :
     pt = Point(dn, Lat, lon, 400)
     result = pt.run_msis()
     data[marklon] = result.Tn_msis
     marklon = marklon+1
-        
-f=result.f107    
+
+f=result.f107
 fa=result.f107a
 apmsis=result.apmsis
 
+#Plot the data
 fig = plt.figure()
 plt.plot(latitudes,data)
 plt.title('Temperature ETA MSIS lon=%.1f UT=0.03 F10.7=%.1f'%(lon,f),fontweight='bold')

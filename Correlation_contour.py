@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Mar  7 13:41:14 2018
-
+Plots the correlation matrix created by the matlab code in Contour_Plots.m
 @author: tojo5760
 """
 
@@ -11,11 +11,15 @@ import numpy as np
 import math
 import matplotlib
 
+#Load data from text file
 data = np.loadtxt("He_Tn_Correlation_400km_pdrag.txt",delimiter=',')
 
+#Create contour plot mesh of correct size
 x = np.linspace(-143,143,287)
 y = np.linspace(-71,71,143)
 X, Y = np.meshgrid(x,y)
+
+#Plot contour
 plt.figure()
 levels = np.linspace(np.amin(data),np.amax(data),100)
 myplot = plt.contourf(X, Y, data,levels,cmap='jet')

@@ -9,7 +9,7 @@ clear all
 clc
 
 aa1=['/home/tojo5760/Documents/MATLAB/'];
-linear=1;
+linear=0;
 
 
 
@@ -53,8 +53,8 @@ if pdrag == 0
     id = 'no Ion Drag';
 end
 den = ncread(filename,'DEN');
-zg = ncread(filename,'ZG');
-he = ncread(filename,'HE');
+zg = ncread(filename,'ZG'); %Geometric altitude
+he = ncread(filename,'HE'); %Units of mass mixing ratio
 n2 = ncread(filename,'N2');
 o1 = ncread(filename,'O1');
 o2 = ncread(filename,'O2');
@@ -102,7 +102,7 @@ wn_alt_1 = squeeze(wn_tp1(:,i_index,:));
 % mbar_alt=mean(mbar_alt_1);
 % wn_alt = mean(wn_alt_1);
 
-% -----Select the Longitude-----
+% -----Condense to selected Longitude-----
 i_index = find(lon==lon_want);
 den_alt = squeeze(den_alt_1(i_index,:));
 he_alt = squeeze(he_alt_1(i_index,:));
@@ -154,7 +154,7 @@ H_mass = zeros(points,1);
 
 
 for i=1:points
-    if i==1 %First Point
+    if i==1 %First Point gradient technique
         coeff1 = (2*geom_alt(1)-geom_alt(2)-geom_alt(3))/((geom_alt(1)-...
             geom_alt(2))*(geom_alt(1)-geom_alt(3)));
         
@@ -178,7 +178,7 @@ for i=1:points
             mbar_alt(3)*coeff3);
         
         
-    elseif i==points %Last point
+    elseif i==points %Last point gradient technique
         coeff1 = (2*geom_alt(i)-geom_alt(i-1)-geom_alt(i))/((geom_alt(i-2)-...
             geom_alt(i-1))*(geom_alt(i-2)-geom_alt(i)));
         
@@ -202,7 +202,7 @@ for i=1:points
             mbar_alt(i)*coeff3);
 
         
-    else %Middle Points
+    else %Middle Points gradient technique
         coeff1 = (2*geom_alt(i)-geom_alt(i)-geom_alt(i+1))/((geom_alt(i-1)-...
             geom_alt(i))*(geom_alt(i-1)-geom_alt(i+1)));
         
