@@ -10,7 +10,7 @@ import numpy as np
 import math
 import matplotlib
 
-data = np.loadtxt("He_400km_pdrag_TEST_DELETE.txt",delimiter=',')
+data = np.loadtxt("He_Tn_normalized_difference_pdrag400km.txt",delimiter=',')
 #data = np.log10(data)
 x = np.linspace(0,143/6, 144)
 y = np.linspace(-88.75,88.75,72)
@@ -22,9 +22,9 @@ levels = np.linspace(np.amin(data),np.amax(data),100)
 myplot = plt.contourf(X, Y, data,levels,cmap='jet')
 cont = plt.contour(X,Y,data,10,colors='k')
 cbar = plt.colorbar(myplot, format='%.2e')
-cbar.ax.set_ylabel('Log 10 O1/N2 Ratio')
+cbar.ax.set_ylabel('Normalized Difference')
 plt.xticks(np.arange(0.,24.,3.))
-plt.title('Log 10 O1/N2 Ratio 400km UT=0 with Ion Drag')
+plt.title('HE Tn Normalized Difference 400km UT=0 with Ion Drag')
 plt.xlabel('Local Solar Time [hr]')
 plt.ylabel('Latitude [deg]')
 plt.show()

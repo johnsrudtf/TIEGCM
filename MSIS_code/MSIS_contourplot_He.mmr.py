@@ -25,7 +25,10 @@ Av = 6.022141*10**23
 # print pt
 # print result.f107
 #==============================================================================
-
+mag_equator = np.loadtxt("Magnetic_equator_lat_lon.txt",delimiter=',')
+top = mag_equator[180:360,:]
+bottom = mag_equator[0:180,:]
+mag_equator = np.concatenate((top,bottom),axis=0)
 data = np.zeros((120,240))
 marklon = 0
 
@@ -35,7 +38,8 @@ for Lon in range(0,240,1) :
         pt = Point(dn, Lat*1.5, Lon*1.5, 400)#1.5 degree grid size
         result = pt.run_msis()
 #        data[marklat,marklon] = math.log10((result.nn['HE']*4/Av)/(result.rho-result.nn['HE']*4/Av),10)
-        data[marklat,marklon] = result.nn['HE']*.004003/Av*10**6
+#        data[marklat,marklon] = result.nn['HE']*.004003/Av*10**6
+        data[marklat,marklon] = result.Tn_msis
         marklat = marklat+1
     marklon = marklon+1
         
@@ -47,15 +51,16 @@ apmsis=result.apmsis
 x = np.linspace(0,143/6, 240)
 y = np.linspace(-88.75,88.75,120)
 X, Y = np.meshgrid(x, y)
-
+magnetic_x = np.linspace(0,143/6,360)
 plt.figure()
-#levels = np.linspace(np.amin(data),np.amax(data),100)
-levels = np.linspace(1.5153e-14,6.8968999999999999e-14,100)
+levels = np.linspace(np.amin(data),np.amax(data),100)
+#levels = np.linspace(1.5153e-14,6.8968999999999999e-14,100)
 myplot = plt.contourf(X, Y, data,levels,cmap='jet')
 cont = plt.contour(X,Y,data,10,colors='k')
 cbar = plt.colorbar(myplot, format='%.2e')
-cbar.ax.set_ylabel('He Density [kg/m^3]')
-plt.title('Helium Density 400km UT=0 MSIS')
+cbar.ax.set_ylabel('Neutral Temperature [K]')
+plt.plot(magnetic_x,mag_equator[:,1],'r')
+plt.title('Neutral Temperature 400km UT=0 MSIS')
 plt.xlabel('Solar Local Time [hr]')
 plt.ylabel('Latitude [deg]')
 plt.show()

@@ -15,7 +15,7 @@ linear=1;
 %----------------
 ut_want=1;%
 alt_want=400;
-pdrag = 1;
+pdrag = 1;% set to 1 to use pdrag file, 0 to use ctrSS file
 
 %------------------
 atom_unit=1.67e-27; % kg/unit
@@ -122,7 +122,8 @@ Tn = [left,right];
 maxTn = max(max(Tn));
 minTn = min(min(Tn));
 rangeTn = maxTn-minTn;
-Tn_normalized = (Tn-minTn)./rangeTn;
+mid_Tn = (maxTn+minTn)/2;
+Tn_normalized = (Tn-mid_Tn)./rangeTn*2;%Scale data to between -1 and 1
 
 %Mass Density
 mHe = He.*Den*1000;% Helium Mass Density kg/m^3 
@@ -149,6 +150,26 @@ mid_N2 = (maxN2+minN2)/2;
 N2_normalized = (mN2-mid_N2)./rangeN2*2;
 mN2log = log10(mN2);
 
+%Shift N2 for max correllation----
+lowest = 1;
+for i=2:72
+    bottom = N2_normalized((i:end),:);
+    top = N2_normalized((1:i-1),:);
+    shiftvert_N2 = [top;bottom];% This shifts the N2 data up by (72-i)
+    for j=2:144
+        left = shiftvert_N2(:,(j:end));
+        right = shiftvert_N2(:,(1:j-1));
+        normN2_shift = [left,right];% Shifts N2 data to the right by (144-j)
+        R = corrcoef(He_normalized, normN2_shift);
+        correlation = R(1,2);
+        if correlation<lowest
+            lowest = correlation;
+            location = [i,j];%
+        end
+    end
+end
+        
+%---------------------------------
 mO1 = O1.*Den*1000;% Density kg/m^3 
 mO1 = mO1.';
 left = mO1(:,(73:end));
@@ -160,10 +181,12 @@ oxy_ratio = mO1./mN2;
 normal_he_n2 = He_normalized./N2_normalized;
 normal_he_tn = He_normalized./Tn_normalized;
 
-dlmwrite(['He_400km_',id,'_TEST_DELETE.txt'],He_normalized);
+Difference = He_normalized-Tn_normalized;
+
+%dlmwrite(['He_Tn_normalized_difference_',id,'400km.txt'],Difference);
 
 %Correlation
-CorrN2 = xcorr2(He_normalized, N2_normalized);
-CorrTn = xcorr2(He_normalized, Tn_normalized);
-Corr = xcorr2(He_normalized);
+CorrN2 = corrcoef(He_normalized, N2_normalized);
+CorrTn = normxcorr2(He_normalized, Tn_normalized);
+Corr = normxcorr2(He_normalized, He_normalized);
 %dlmwrite('He_N2_Correlation_400km_pdrag',CorrN2);
