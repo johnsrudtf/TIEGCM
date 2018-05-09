@@ -13,14 +13,14 @@ close all
 clc
 
 aa1=['/home/tojo5760/Documents/TIEGCM_files/'];
-linear=1;
+linear=0;
 
 
 
 %----------------
 ut_want=1; % Specify the universal time. This is the first UT time in the TIEGCM file
 alt_want=400; %Specify the desired altitude in km
-pdrag = 1;% set to 1 to use pdrag file, 0 to use ctrSS file
+pdrag = 0;% set to 1 to use pdrag file, 0 to use ctrSS file
 
 %------------------
 atom_unit=1.67e-27; % kg/unit
@@ -44,11 +44,11 @@ he = ncread(filename,'HE'); %Units of TIEGCM's mass mixing ratio (eg. mass of sp
 n2 = ncread(filename,'N2');
 o1 = ncread(filename,'O1');
 o2 = ncread(filename,'O2');
-tn = ncread(filename,'TN');
+tn = ncread(filename,'TN'); %Neutral Temperature
 mbar = 1./(he/4+n2/28+o1/16+o2/32); %Getting mean molecular mass from mmr
 lat = ncread(filename,'lat');
 lon = ncread(filename,'lon');
-wn = ncread(filename,'WN');
+wn = ncread(filename,'WN'); %Neutral Winds
 
 
 % fixed UT time. Condense arrays to desired UT time. Note ut_want+1 is used due to errors with ut_want
@@ -192,7 +192,7 @@ normal_he_tn = He_normalized./Tn_normalized;
 
 Difference = He_normalized-Tn_normalized;
 
-%dlmwrite(['He_Tn_normalized_difference_',id,'400km.txt'],Difference);
+dlmwrite(['He_',id,'400km.txt'],mHe);
 
 %Correlation coefficients
 CorrN2 = corrcoef(He_normalized, N2_normalized);

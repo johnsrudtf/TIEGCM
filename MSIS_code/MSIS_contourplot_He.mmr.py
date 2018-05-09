@@ -41,8 +41,8 @@ for Lon in range(0,240,1) :
         pt = Point(dn, Lat*1.5, Lon*1.5, 400)#1.5 degree grid size
         result = pt.run_msis()
 #        data[marklat,marklon] = math.log10((result.nn['HE']*4/Av)/(result.rho-result.nn['HE']*4/Av),10) #Derived helium
-#        data[marklat,marklon] = result.nn['HE']*.004003/Av*10**6 # MSIS helium (Should be the same as derived)
-        data[marklat,marklon] = result.Tn_msis #Neutral Temperature
+        data[marklat,marklon] = result.nn['HE']*.004003/Av*10**6 # MSIS helium (Should be the same as derived)
+#        data[marklat,marklon] = result.Tn_msis #Neutral Temperature
         marklat = marklat+1
     marklon = marklon+1
 
@@ -58,14 +58,14 @@ X, Y = np.meshgrid(x, y)
 magnetic_x = np.linspace(0,143/6,360)
 
 plt.figure()
-levels = np.linspace(np.amin(data),np.amax(data),100)
-#levels = np.linspace(1.5153e-14,6.8968999999999999e-14,100)
+#levels = np.linspace(np.amin(data),np.amax(data),100)
+levels = np.linspace(1.5153e-14,6.8968999999999999e-14,100)
 myplot = plt.contourf(X, Y, data,levels,cmap='jet')
 cont = plt.contour(X,Y,data,10,colors='k')
 cbar = plt.colorbar(myplot, format='%.2e')
-cbar.ax.set_ylabel('Neutral Temperature [K]')
+cbar.ax.set_ylabel('Helium Mass Density [kg/m^3]')
 plt.plot(magnetic_x,mag_equator[:,1],'r') #Add magnetic equator line
-plt.title('Neutral Temperature 400km UT=0 MSIS')
+plt.title('Helium Density 400km UT=0 MSIS')
 plt.xlabel('Solar Local Time [hr]')
 plt.ylabel('Latitude [deg]')
 plt.show()
