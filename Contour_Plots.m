@@ -19,7 +19,7 @@ linear=0;
 
 %----------------
 ut_want=1; % Specify the universal time. This is the first UT time in the TIEGCM file
-alt_want=400; %Specify the desired altitude in km
+alt_want=300; %Specify the desired altitude in km
 pdrag = 0;% set to 1 to use pdrag file, 0 to use ctrSS file
 
 %------------------
