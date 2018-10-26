@@ -23,7 +23,7 @@ dn = datetime(1987, 3, 23, 9, 30)#year,month,day,hour,minute
 dn2 = datetime(1981, 3, 23, 9, 30)
 lat = 0.
 lon = -80.
-m = range(100, 1000, 5) #Set altitude range and step size (km)
+m = range(95, 600, 5) #Set altitude range and step size (km)
 Dens1frac = np.zeros(len(m))
 Dens2frac = np.zeros(len(m))
 H1 = np.zeros(len(m))#Pressure scale heights
@@ -42,7 +42,8 @@ R = 6373 #Radius of earth in km
 Av = 6.022141*10**23 #Avogadro's Constant
 n = 0
 rho = np.zeros(len(m))
-
+Te1=np.zeros(len(m))
+Te2 = np.zeros(len(m))
 
 #Iterate through altitudes in range m
 for x in m:
@@ -54,14 +55,21 @@ for x in m:
     #Knudsen number estimate
     n_dens_tot = result.nn['HE']+result.nn['N2']+result.nn['O2'] \
         +result.nn['AR']+result.nn['H']+result.nn['O']+result.nn['N']# number density per cm^3
-    
+        
+    n_dens_tot_new = result.nn['HE']+result.nn['N2']+result.nn['O2']+result.nn['AR'] #Added Sep. 18 2018
+    Te1[n] = n_dens_tot_new
     d_avg = (result.nn['HE']/n_dens_tot*260+result.nn['N2']/n_dens_tot*364\
         +result.nn['O2']/n_dens_tot*346+result.nn['AR']/n_dens_tot*340)\
         *10**(-12)+(result.nn['H']+result.nn['O']+result.nn['N'])/n_dens_tot*5.046*10**(-10)# average kinetic diameter of 
         # molecules in atmosphere. Note H and O are ignored due to no data on
         # their kinetic diameters and the breakdown of the model with ions 
         # (hard sphere collisions of molecules)   
-    lam = 1/(math.sqrt(2)*math.pi*d_avg**2*n_dens_tot*10**(6))
+        
+    d_avg = (result.nn['HE']/n_dens_tot_new*260+result.nn['N2']/n_dens_tot_new*364\
+        +result.nn['O2']/n_dens_tot_new*346+result.nn['AR']/n_dens_tot_new*340)\
+        *10**(-12)
+        
+    lam = 1/(math.sqrt(2)*math.pi*d_avg**2*n_dens_tot_new*10**(6))
         # lam = 1/(pi*Nv*D^2*sqrt(2))
     L = 1 #in meters. Chosen characteristic length
     Kn1[n] = lam/L
@@ -71,21 +79,31 @@ for x in m:
     +result.nn['O2']*.032/Av+result.nn['AR']*.039948/Av+result.nn['N']\
     *.01401/Av+result.nn['H']*.001/Av+result.nn['O']*.016/Av)#kg/cm^3
     
-    M1[n] = m_dens1/(n_dens_tot)
+    m_dens1 = (result.nn['HE']*.004003/Av+result.nn['N2']*.0280134/Av\
+    +result.nn['O2']*.032/Av+result.nn['AR']*.039948/Av)#kg/cm^3
+    
+    M1[n] = m_dens1/(n_dens_tot_new)
     T1[n] = result.Tn_msis
     H1[n] = k*T1[n]/(M1[n]*g)
     Kn1At[n] = lam/(H1[n])
+    #Kn1At[n] = lam
     
     n_dens_tot2 = result2.nn['HE']+result2.nn['N2']+result2.nn['O2'] \
         +result2.nn['AR']+result2.nn['H']+result2.nn['O']+result2.nn['N']# number density per cm^3
     
+    n_dens_tot2_new = result2.nn['HE']+result2.nn['N2']+result2.nn['O2']+result2.nn['AR'] #Added Sep. 18 2018
+    Te2[n] = n_dens_tot2_new
     d_avg2 = (result2.nn['HE']/n_dens_tot2*260+result2.nn['N2']/n_dens_tot2*364\
         +result2.nn['O2']/n_dens_tot2*346+result2.nn['AR']/n_dens_tot2*340)\
         *10**(-12)+(result2.nn['H']+result2.nn['O']+result2.nn['N'])/n_dens_tot2*5.046*10**(-10)# average kinetic diameter of 
         # molecules in atmosphere. Note H and O are ignored due to no data on
         # their kinetic diameters and the breakdown of the model with ions 
         # (hard sphere collisions of molecules)
-    lam2 = 1/(math.sqrt(2)*math.pi*d_avg2**2*n_dens_tot2*10**(6))
+    d_avg2 = (result2.nn['HE']/n_dens_tot2_new*260+result2.nn['N2']/n_dens_tot2_new*364\
+        +result2.nn['O2']/n_dens_tot2_new*346+result2.nn['AR']/n_dens_tot2_new*340)\
+        *10**(-12)
+    
+    lam2 = 1/(math.sqrt(2)*math.pi*d_avg2**2*n_dens_tot2_new*10**(6))
         # lam = 1/(pi*Nv*D^2*sqrt(2)) in meters
     Kn2[n] = lam2/L    
    
@@ -93,10 +111,14 @@ for x in m:
     +result2.nn['O2']*.032/Av+result2.nn['AR']*.039948/Av+result2.nn['N']\
     *.01401/Av+result2.nn['H']*.001/Av+result2.nn['O']*.016/Av)#kg/cm^3
     
-    M2[n] = m_dens2/(n_dens_tot2)
+    m_dens2 = (result2.nn['HE']*.004003/Av+result2.nn['N2']*.0280134/Av\
+    +result2.nn['O2']*.032/Av+result2.nn['AR']*.039948/Av)#kg/cm^3
+    
+    M2[n] = m_dens2/(n_dens_tot2_new)
     T2[n] = result2.Tn_msis
     H2[n] = k*T2[n]/(M2[n]*g) # in meters
     Kn2At[n] = lam2/(H2[n])
+    #Kn2At[n] = lam2
     
     #Helium Density plots
     He1 = result.nn['HE']*.004003/Av 
@@ -116,8 +138,8 @@ fig = plt.figure()
 ax = plt.subplot(111)
 line1, = ax.plot(Kn1, m, label='1987 F10.7 = %.1f' %F107_1, color='red')
 line2, = ax.plot(Kn2, m, label='1981 F10.7 = %.1f' %F107_2, color='blue')
-line3, = ax.plot(Kn1At, m, label='Atmospheric, F10.7 = %.1f' %F107_1, color='red', ls='dashed')
-line4, = ax.plot(Kn2At, m, label='Atmospheric, F10.7 = %.1f' %F107_2, color='blue', ls='dashed')
+line3, = ax.plot(Kn1/H_tot1, m, label='Atmospheric, F10.7 = %.1f' %F107_1, color='red', ls='dashed')
+line4, = ax.plot(Kn2/H_tot2, m, label='Atmospheric, F10.7 = %.1f' %F107_2, color='blue', ls='dashed')
 
 plt.xscale('log')
 plt.xlabel('Knudsen Number')
@@ -192,4 +214,24 @@ plt.title('Temperature/Molecular mass')
 ax.legend()
 plt.show()
 
+#
+fig = plt.figure()
+ax = plt.subplot(111)
+ax.plot(Kn1/1000,m, label='Low F10.7')
+ax.plot(Kn2/1000,m, label='High F10.7')
+plt.xlabel('Mean Free Path (km)')
+plt.ylabel('Altitude (km)')
+plt.title('Mean Free Path With Altitude')
+ax.legend()
+plt.show()
 
+fig = plt.figure()
+ax = plt.subplot(111)
+ax.plot(Te1,m, label='Low F10.7')
+ax.plot(Te2,m, label='High F10.7')
+plt.xscale('log')
+plt.xlabel('Neutral Number Density cm^-3')
+plt.ylabel('Altitude (km)')
+plt.title('Neutral Number Density With Altitude')
+ax.legend()
+plt.show()

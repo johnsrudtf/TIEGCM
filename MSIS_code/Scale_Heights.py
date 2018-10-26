@@ -13,7 +13,7 @@ import numpy as np
 import math
 import matplotlib
 
-dn = datetime(1992, 3, 20, 0, 2)#year,month,day,hour,minute UTC
+dn = datetime(1987, 3, 23, 9, 30)#year,month,day,hour,minute UTC
 feat = 3
 if feat == 1:
     lat = 35. #Night North Feature
@@ -25,7 +25,10 @@ if feat == 3:
     lat = 5. #Day Feature
     lon = -95. #Day Feature
 
-m = range(95, 500, 5) #Set altitude range and step size (km)
+lat = 0.
+lon = -80.
+
+m = range(95, 600, 5) #Set altitude range and step size (km)
 Densfrac = np.zeros(len(m))
 
 Hp= np.zeros(len(m))#Pressure scale heights
@@ -53,14 +56,17 @@ for x in m:
     result = pt.run_msis()
     #Knudsen number estimate
     n_dens_tot = result.nn['HE']+result.nn['N2']+result.nn['O2'] \
-        +result.nn['AR']+result.nn['H']+result.nn['O']+result.nn['N']# number density per cm^3
+        +result.nn['AR']#+result.nn['H']+result.nn['O']+result.nn['N']# number density per cm^3
 
     g = g0*R**2/(R+x)**2
     m_dens1 = (result.nn['HE']*.004003/Av+result.nn['N2']*.0280134/Av\
     +result.nn['O2']*.032/Av+result.nn['AR']*.039948/Av+result.nn['N']\
     *.01401/Av+result.nn['H']*.001/Av+result.nn['O']*.016/Av)#kg/cm^3
 
-    Mbar[n] = m_dens1*Av*1000/(n_dens_tot)#kg/kmol
+    m_dens1 = (result.nn['HE']*.004003/Av+result.nn['N2']*.0280134/Av\
+    +result.nn['O2']*.032/Av+result.nn['AR']*.039948/Av)
+
+    Mbar[n] = m_dens1*Av*1000/(n_dens_tot) #kg/kmol
     Tn[n] = result.Tn_msis
 
     #Follows form of kT/mg for pressure scale height

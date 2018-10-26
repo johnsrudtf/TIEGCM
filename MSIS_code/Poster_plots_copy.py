@@ -25,7 +25,7 @@ dn = datetime(1987, 3, 23, 9, 30)#year,month,day,hour,minute
 dn2 = datetime(1981, 3, 23, 9, 30)
 lat = 0.
 lon = -80.
-m = range(100, 1000, 5) #Set altitude range and step size (km)
+m = range(100, 600, 5) #Set altitude range and step size (km)
 Dens1frac = np.zeros(len(m))
 Dens2frac = np.zeros(len(m))
 H1 = np.zeros(len(m))#Pressure scale heights
@@ -49,16 +49,16 @@ Mass_O2 = 32.00
 Mass_He = 4.00
 Mass_N2 = 28.01
 Mass_Ar = 39.95
-Radius_O2 = 346
-Radius_He = 260
-Radius_N2 = 364
-Radius_Ar = 340
+Radius_O2 = 346/2.0
+Radius_He = 260/2.0
+Radius_N2 = 364/2.0
+Radius_Ar = 340/2.0
 R_gas = 8.3144598 #Universal gas constant
 
 #Iterate through altitudes in range m
 for x in m:
-    pt = Point(dn, lat, lon, x)
-    pt2 = Point(dn2, lat, lon, x)
+    pt = Point(dn, lat, lon, 400)
+    pt2 = Point(dn2, lat, lon, 400)
     result = pt.run_msis()
     result2 = pt2.run_msis()
     
@@ -74,16 +74,25 @@ for x in m:
     Coll_freq_1 = collision_freq(result.nn['HE'], result.nn['N2'], Mass_He, Mass_N2, Radius_He, Radius_N2, result.Tn_msis, result.Tn_msis)
     Coll_freq_2 = collision_freq(result.nn['HE'], result.nn['O2'], Mass_He, Mass_O2, Radius_He, Radius_O2, result.Tn_msis, result.Tn_msis)
     Coll_freq_3 = collision_freq(result.nn['HE'], result.nn['AR'], Mass_He, Mass_Ar, Radius_He, Radius_Ar, result.Tn_msis, result.Tn_msis)
-    Coll_freq_4 = collision_freq(result.nn['HE'], result.nn['HE'], Mass_He, Mass_He, Radius_He, Radius_He, result.Tn_msis, result.Tn_msis)
+    Coll_freq_4 = collision_freq(result.nn['N2'], result.nn['HE'], Mass_N2, Mass_He, Radius_N2, Radius_He, result.Tn_msis, result.Tn_msis)
     Coll_freq_5 = collision_freq(result.nn['N2'], result.nn['O2'], Mass_N2, Mass_O2, Radius_N2, Radius_O2, result.Tn_msis, result.Tn_msis)
     Coll_freq_6 = collision_freq(result.nn['N2'], result.nn['AR'], Mass_N2, Mass_Ar, Radius_N2, Radius_Ar, result.Tn_msis, result.Tn_msis)
-    Coll_freq_7 = collision_freq(result.nn['N2'], result.nn['N2'], Mass_N2, Mass_N2, Radius_N2, Radius_N2, result.Tn_msis, result.Tn_msis)
+    Coll_freq_7 = collision_freq(result.nn['O2'], result.nn['N2'], Mass_O2, Mass_N2, Radius_O2, Radius_N2, result.Tn_msis, result.Tn_msis)
     Coll_freq_8 = collision_freq(result.nn['O2'], result.nn['AR'], Mass_O2, Mass_Ar, Radius_O2, Radius_Ar, result.Tn_msis, result.Tn_msis)
-    Coll_freq_9 = collision_freq(result.nn['O2'], result.nn['O2'], Mass_O2, Mass_O2, Radius_O2, Radius_O2, result.Tn_msis, result.Tn_msis)
-    Coll_freq_10 = collision_freq(result.nn['AR'], result.nn['AR'], Mass_Ar, Mass_Ar, Radius_Ar, Radius_Ar, result.Tn_msis, result.Tn_msis)
-    Coll_freq_total = Coll_freq_1+Coll_freq_2+Coll_freq_3+Coll_freq_4+Coll_freq_5+Coll_freq_6+Coll_freq_7+Coll_freq_8+Coll_freq_9+Coll_freq_10
-    Coll_freq_avg = Coll_freq_total/10
+    Coll_freq_9 = collision_freq(result.nn['O2'], result.nn['HE'], Mass_O2, Mass_He, Radius_O2, Radius_He, result.Tn_msis, result.Tn_msis)
+    Coll_freq_10 = collision_freq(result.nn['AR'], result.nn['N2'], Mass_Ar, Mass_N2, Radius_Ar, Radius_N2, result.Tn_msis, result.Tn_msis)
+    Coll_freq_11 = collision_freq(result.nn['AR'], result.nn['O2'], Mass_Ar, Mass_O2, Radius_Ar, Radius_O2, result.Tn_msis, result.Tn_msis)
+    Coll_freq_12 = collision_freq(result.nn['AR'], result.nn['HE'], Mass_Ar, Mass_He, Radius_Ar, Radius_He, result.Tn_msis, result.Tn_msis)
+    Coll_freq_total = Coll_freq_1+Coll_freq_2+Coll_freq_3+Coll_freq_4+Coll_freq_5+Coll_freq_6+Coll_freq_7+Coll_freq_8+Coll_freq_9+Coll_freq_10\
+        +Coll_freq_11+Coll_freq_12
+    Coll_freq_avg = Coll_freq_total/12
     Molecular_speed = math.sqrt((8*R_gas*result.Tn_msis)/(math.pi*M))
+    
+    d_avg = (result.nn['HE']/n_dens_tot_new*260+result.nn['N2']/n_dens_tot_new*364\
+        +result.nn['O2']/n_dens_tot_new*346+result.nn['AR']/n_dens_tot_new*340)\
+        *10**(-12)
+    lam = 1/(math.sqrt(2)*math.pi*d_avg**2*n_dens_tot_new*10**(6))
+    Old_collision_freq = Molecular_speed/lam
 
     lam = Molecular_speed/Coll_freq_avg
     L = 1 #in meters. Chosen characteristic length
@@ -110,16 +119,25 @@ for x in m:
     Coll_freq_1 = collision_freq(result2.nn['HE'], result2.nn['N2'], Mass_He, Mass_N2, Radius_He, Radius_N2, result2.Tn_msis, result2.Tn_msis)
     Coll_freq_2 = collision_freq(result2.nn['HE'], result2.nn['O2'], Mass_He, Mass_O2, Radius_He, Radius_O2, result2.Tn_msis, result2.Tn_msis)
     Coll_freq_3 = collision_freq(result2.nn['HE'], result2.nn['AR'], Mass_He, Mass_Ar, Radius_He, Radius_Ar, result2.Tn_msis, result2.Tn_msis)
-    Coll_freq_4 = collision_freq(result2.nn['HE'], result2.nn['HE'], Mass_He, Mass_He, Radius_He, Radius_He, result2.Tn_msis, result2.Tn_msis)
+    Coll_freq_4 = collision_freq(result2.nn['N2'], result2.nn['HE'], Mass_N2, Mass_He, Radius_N2, Radius_He, result2.Tn_msis, result2.Tn_msis)
     Coll_freq_5 = collision_freq(result2.nn['N2'], result2.nn['O2'], Mass_N2, Mass_O2, Radius_N2, Radius_O2, result2.Tn_msis, result2.Tn_msis)
     Coll_freq_6 = collision_freq(result2.nn['N2'], result2.nn['AR'], Mass_N2, Mass_Ar, Radius_N2, Radius_Ar, result2.Tn_msis, result2.Tn_msis)
-    Coll_freq_7 = collision_freq(result2.nn['N2'], result2.nn['N2'], Mass_N2, Mass_N2, Radius_N2, Radius_N2, result2.Tn_msis, result2.Tn_msis)
+    Coll_freq_7 = collision_freq(result2.nn['O2'], result2.nn['N2'], Mass_O2, Mass_N2, Radius_O2, Radius_N2, result2.Tn_msis, result2.Tn_msis)
     Coll_freq_8 = collision_freq(result2.nn['O2'], result2.nn['AR'], Mass_O2, Mass_Ar, Radius_O2, Radius_Ar, result2.Tn_msis, result2.Tn_msis)
-    Coll_freq_9 = collision_freq(result2.nn['O2'], result2.nn['O2'], Mass_O2, Mass_O2, Radius_O2, Radius_O2, result2.Tn_msis, result2.Tn_msis)
-    Coll_freq_10 = collision_freq(result2.nn['AR'], result2.nn['AR'], Mass_Ar, Mass_Ar, Radius_Ar, Radius_Ar, result2.Tn_msis, result2.Tn_msis)
-    Coll_freq_total2 = Coll_freq_1+Coll_freq_2+Coll_freq_3+Coll_freq_4+Coll_freq_5+Coll_freq_6+Coll_freq_7+Coll_freq_8+Coll_freq_9+Coll_freq_10
-    Coll_freq_avg2 = Coll_freq_total2/10
+    Coll_freq_9 = collision_freq(result2.nn['O2'], result2.nn['HE'], Mass_O2, Mass_He, Radius_O2, Radius_He, result2.Tn_msis, result2.Tn_msis)
+    Coll_freq_10 = collision_freq(result2.nn['AR'], result2.nn['N2'], Mass_Ar, Mass_N2, Radius_Ar, Radius_N2, result2.Tn_msis, result2.Tn_msis)
+    Coll_freq_11 = collision_freq(result2.nn['AR'], result2.nn['O2'], Mass_Ar, Mass_O2, Radius_Ar, Radius_O2, result2.Tn_msis, result2.Tn_msis)
+    Coll_freq_12 = collision_freq(result2.nn['AR'], result2.nn['HE'], Mass_Ar, Mass_He, Radius_Ar, Radius_He, result2.Tn_msis, result2.Tn_msis)
+    Coll_freq_total2 = Coll_freq_1+Coll_freq_2+Coll_freq_3+Coll_freq_4+Coll_freq_5+Coll_freq_6+Coll_freq_7+Coll_freq_8+Coll_freq_9+Coll_freq_10\
+        +Coll_freq_11+Coll_freq_12
+    Coll_freq_avg2 = Coll_freq_total2/12
     Molecular_speed2 = math.sqrt((8*R_gas*result2.Tn_msis)/(math.pi*M_2))
+
+    d_avg = (result2.nn['HE']/n_dens_tot2_new*260+result2.nn['N2']/n_dens_tot2_new*364\
+        +result2.nn['O2']/n_dens_tot2_new*346+result2.nn['AR']/n_dens_tot2_new*340)\
+        *10**(-12)
+    lam = 1/(math.sqrt(2)*math.pi*d_avg**2*n_dens_tot2_new*10**(6))
+    Old_collision_freq2 = Molecular_speed2/lam
 
     lam2 = Molecular_speed2/Coll_freq_avg2
     Kn2[n] = lam2/L    
