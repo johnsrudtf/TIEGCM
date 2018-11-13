@@ -319,100 +319,100 @@ H_O1_diff = 1./(1./H_temp+1./Hp_o1);% O1 Diffusive profile
 
 
 % -----Plot the Scale Heights-----
-% f=figure;
-% hold on
-% plot(H_he_star(1:47), geom_alt(1:47),'r','linewidth', 2);
-% % plot(H_he_star_ln(1:end-2), geom_alt(1:end-2));
-% plot(H_he_diff(3:47),geom_alt(3:47),'b','linewidth', 2);
-% plot(H_tot(1:47),geom_alt(1:47),'color',[.2,.7,.2],'linewidth', 2);
-% legend('H_i^* TIEGCM','H_i Diffusive Eq','H Total' ,'location','north');
-% title(['Helium Scale Heights lon=',num2str(lon_want),' lat=',num2str(lat_want),' UT=0.03 ',id]);
-% xlabel('Scale Height (km)');
-% ylabel('Geometric Altitude (km)');
-% % saveas(f,'H_he_intermediate_density.png');
+f=figure;
+hold on
+plot(H_he_star(1:47), geom_alt(1:47),'r','linewidth', 2);
+% plot(H_he_star_ln(1:end-2), geom_alt(1:end-2));
+plot(H_he_diff(3:47),geom_alt(3:47),'b','linewidth', 2);
+plot(H_tot(1:47),geom_alt(1:47),'color',[.2,.7,.2],'linewidth', 2);
+legend('H_i^* TIEGCM','H_i Diffusive Eq','H Total' ,'location','north');
+title(['Helium Scale Heights lon=',num2str(lon_want),' lat=',num2str(lat_want),' UT=0.03 ',id]);
+xlabel('Scale Height (km)');
+ylabel('Geometric Altitude (km)');
+% saveas(f,'H_he_intermediate_density.png');
 
-% f=figure;
-% hold on
-% plot(H_O1_star(3:44),geom_alt(6:47),'r','linewidth', 2);
-% % plot(H_o1_star_ln(6:end-2), geom_alt(6:end-2));
-% plot(H_O1_diff(1:47),geom_alt(1:47),'b','linewidth', 2);
-% plot(H_tot(1:47),geom_alt(1:47),'color',[.2,.7,.2],'linewidth', 2);
-% legend('H_i^* TIEGCM','H_i Diffusive Eq','H Total' ,'location','north');
-% title(['Oxygen Scale Heights lon=',num2str(lon_want),' lat=',num2str(lat_want),' UT=0.03 ',id]);
-% xlabel('Scale Height (km)');
-% ylabel('Geometric Altitude (km)');
-% % saveas(f,'H_O1_intermediate_density.png');
-% 
-% f=figure;
-% hold on
-% plot(H_N2_star(1:47),geom_alt(1:47),'r','linewidth', 2);
-% % plot(H_n2_star_ln(1:end-2), geom_alt(1:end-2));
-% plot(H_N2_diff(1:47),geom_alt(1:47),'b','linewidth', 2);
-% plot(H_tot(1:47),geom_alt(1:47),'color',[.2,.7,.2],'linewidth', 2);
-% legend('H_i^* TIEGCM','H_i Diffusive Eq','H Total' ,'location','northwest');
-% title(['N2 Scale Heights lon=',num2str(lon_want),' lat=',num2str(lat_want),' UT=0.03 ',id]);
-% xlabel('Scale Height (km)');
-% ylabel('Geometric Altitude (km)');
-% % saveas(f,'H_N2_intermediate_density.png');
-% 
-% figure
-% hold on
-% plot(H_he_star(1:47), geom_alt(1:47),'r','linewidth', 2);
-% plot(H_O1_star(3:44),geom_alt(6:47),'b','linewidth', 2);
-% plot(H_N2_star(1:47),geom_alt(1:47),'color',[.2,.7,.2],'linewidth', 2);
-% legend('H_H_e^*','H_O_1^*','H_N_2^*','location','north');
-% xlabel('Scale Height (km)');
-% ylabel('Geometric Altitude (km)');
-% title(['Scale Heights lon=',num2str(lon_want),' lat=',num2str(lat_want),' UT=0.03 ',id])
+f=figure;
+hold on
+plot(H_O1_star(3:44),geom_alt(6:47),'r','linewidth', 2);
+% plot(H_o1_star_ln(6:end-2), geom_alt(6:end-2));
+plot(H_O1_diff(1:47),geom_alt(1:47),'b','linewidth', 2);
+plot(H_tot(1:47),geom_alt(1:47),'color',[.2,.7,.2],'linewidth', 2);
+legend('H_i^* TIEGCM','H_i Diffusive Eq','H Total' ,'location','north');
+title(['Oxygen Scale Heights lon=',num2str(lon_want),' lat=',num2str(lat_want),' UT=0.03 ',id]);
+xlabel('Scale Height (km)');
+ylabel('Geometric Altitude (km)');
+% saveas(f,'H_O1_intermediate_density.png');
 
-% figure
-% plot (reallog(mhe),geom_alt);
+f=figure;
+hold on
+plot(H_N2_star(1:47),geom_alt(1:47),'r','linewidth', 2);
+% plot(H_n2_star_ln(1:end-2), geom_alt(1:end-2));
+plot(H_N2_diff(1:47),geom_alt(1:47),'b','linewidth', 2);
+plot(H_tot(1:47),geom_alt(1:47),'color',[.2,.7,.2],'linewidth', 2);
+legend('H_i^* TIEGCM','H_i Diffusive Eq','H Total' ,'location','northwest');
+title(['N2 Scale Heights lon=',num2str(lon_want),' lat=',num2str(lat_want),' UT=0.03 ',id]);
+xlabel('Scale Height (km)');
+ylabel('Geometric Altitude (km)');
+% saveas(f,'H_N2_intermediate_density.png');
 
-% figure
-% hold on
-% plot(H_temp(1:30), geom_alt(1:30),'linewidth',2);
-% plot(Hp_mean(1:end-1), geom_alt(1:end-1),'linewidth',2);
-% plot(H_mass(:),geom_alt(:),'linewidth',2);
-% legend('Temp','Pressure','Mean mass');
-% xlabel('Scale Height [km]');
-% ylabel('Geometric Altitude [km]');
-% title(['Scale Heights lon=',num2str(lon_want),' lat=',num2str(lat_want),' UT=0.03 ',id])
-% 
-% figure
-% plot(meanmass,geom_alt);
-% ylabel('Geometric Altitude [km]');
-% xlabel('Mean Molecular Mass [kg/kmol]');
-% title(['Mean Molecular Mass vs Altitude lon=',num2str(lon_want),' lat=',num2str(lat_want),' UT=0.03 no Ion Drag'])
-% 
-% %-----Plot Density and Vertical winds for mass flux-----
-% figure
-% plot(wn_alt,geom_alt,'b','linewidth',2);
-% xlabel('Vertical Winds (cm/s)');
-% ylabel('Geometric Altitude (km)');
-% title('Vertical Winds With Altitude');
-% 
-% figure
-% plot(den_alt,geom_alt,'r','linewidth',2);
-% set(gca, 'Xscale', 'log');
-% xlabel('Log Total Density (g/cm^3)');
-% ylabel('Geometric Altitude (km)');
-% title('Total Mass Density');
+figure
+hold on
+plot(H_he_star(1:47), geom_alt(1:47),'r','linewidth', 2);
+plot(H_O1_star(3:44),geom_alt(6:47),'b','linewidth', 2);
+plot(H_N2_star(1:47),geom_alt(1:47),'color',[.2,.7,.2],'linewidth', 2);
+legend('H_H_e^*','H_O_1^*','H_N_2^*','location','north');
+xlabel('Scale Height (km)');
+ylabel('Geometric Altitude (km)');
+title(['Scale Heights lon=',num2str(lon_want),' lat=',num2str(lat_want),' UT=0.03 ',id])
 
-% wn_alt_day = wn_alt;
-% wn_alt_night_south = wn_alt;
-% wn_alt_night_north = wn_alt;
-% wn_alt_intermediate = wn_alt;
+figure
+plot (reallog(mhe),geom_alt);
 
-% den_alt_day = den_alt;
-% den_alt_night_south = den_alt;
-% den_alt_night_north = den_alt;
-% den_alt_intermediate = den_alt;
+figure
+hold on
+plot(H_temp(1:30), geom_alt(1:30),'linewidth',2);
+plot(Hp_mean(1:end-1), geom_alt(1:end-1),'linewidth',2);
+plot(H_mass(:),geom_alt(:),'linewidth',2);
+legend('Temp','Pressure','Mean mass');
+xlabel('Scale Height [km]');
+ylabel('Geometric Altitude [km]');
+title(['Scale Heights lon=',num2str(lon_want),' lat=',num2str(lat_want),' UT=0.03 ',id])
+
+figure
+plot(meanmass,geom_alt);
+ylabel('Geometric Altitude [km]');
+xlabel('Mean Molecular Mass [kg/kmol]');
+title(['Mean Molecular Mass vs Altitude lon=',num2str(lon_want),' lat=',num2str(lat_want),' UT=0.03 no Ion Drag'])
+
+%-----Plot Density and Vertical winds for mass flux-----
+figure
+plot(wn_alt,geom_alt,'b','linewidth',2);
+xlabel('Vertical Winds (cm/s)');
+ylabel('Geometric Altitude (km)');
+title('Vertical Winds With Altitude');
+
+figure
+plot(den_alt,geom_alt,'r','linewidth',2);
+set(gca, 'Xscale', 'log');
+xlabel('Log Total Density (g/cm^3)');
+ylabel('Geometric Altitude (km)');
+title('Total Mass Density');
+
+wn_alt_day = wn_alt;
+wn_alt_night_south = wn_alt;
+wn_alt_night_north = wn_alt;
+wn_alt_intermediate = wn_alt;
+
+den_alt_day = den_alt;
+den_alt_night_south = den_alt;
+den_alt_night_north = den_alt;
+den_alt_intermediate = den_alt;
 figure
 plot(H_temp(1:end-30),geom_alt(1:end-30));
 xlabel('Temperature Scale Height [km]');
 ylabel('Altitude [km]');
 title('Nighttime Feature');
-% figure
-% plot(Hp_o1(1:end-30),geom_alt(1:end-30));
-% xlabel('Pressure Scale Height [km]');
-% ylabel('Altitude [km]');
+figure
+plot(Hp_o1(1:end-30),geom_alt(1:end-30));
+xlabel('Pressure Scale Height [km]');
+ylabel('Altitude [km]');

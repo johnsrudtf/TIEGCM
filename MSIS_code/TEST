@@ -1,0 +1,117 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 26 13:57:30 2018
+
+@author: tojo5760
+"""
+
+from datetime import datetime
+import matplotlib.pyplot as plt
+import numpy as np
+import math
+import matplotlib
+from callable_scale_height import Scale_Height
+from callable_scale_height import Mean_free_path
+
+dn1 = datetime(1987, 3, 23, 9, 30)
+dn2 = datetime(1981, 3, 23, 9, 30)
+altitude = range(95, 600, 5)
+lat = 0
+lon = 80
+
+[MFP, C_freq, d_avg, Molecular_speed] = Mean_free_path(lat,lon,dn1,altitude, 1)
+[MFP2, C_freq2, d_avg2, Molecular_speed2] = Mean_free_path(lat,lon,dn2,altitude, 1)
+#MFP2 = Mean_free_path(lat,lon,dn1,altitude, 1.2)
+#MFP3 = Mean_free_path(lat,lon,dn1,altitude, 1.4)
+#MFP4 = Mean_free_path(lat,lon,dn1,altitude, 1.6)
+[H_tot, H_he_star, H_n2_star, H_o1_star] = Scale_Height(lat,lon,dn1,altitude)
+[H_tot2, H_he_star2, H_n2_star2, H_o1_star2] = Scale_Height(lat,lon,dn2,altitude)
+
+
+
+KnAt1 = MFP/(H_tot*1000)
+KnAt2 = MFP2/(H_tot2*1000)
+#KnAt3 = MFP3/(H_tot*1000)
+#KnAt4 = MFP4/(H_tot*1000)
+
+fig = plt.figure()
+ax = plt.subplot(111)
+ax.plot(KnAt1,altitude, color='red', ls='dashed', label='F10.7 = 75.5')
+ax.plot(KnAt2,altitude, color='blue', ls='dashed', label='f10.7 = 188')
+ax.plot(MFP,altitude, color='red')
+ax.plot(MFP2,altitude, color='blue')
+plt.xscale('log')
+plt.xlabel('Knudsen Number')
+plt.ylabel('Altitude (km)')
+plt.title('Knudsen Number with Altitude')
+ax.legend()
+red_patch = matplotlib.patches.Patch(color='red', label='F10.7 = 75.5')
+blue_patch = matplotlib.patches.Patch(color='blue', label='F10.7 = 188.0')
+black_line = matplotlib.lines.Line2D([], [], color='black', label='L = 1m')
+black_dash = matplotlib.lines.Line2D([], [], ls='dashed', color='black', label='L=H scale height')
+plt.legend(handles=[red_patch, blue_patch, black_line, black_dash], loc='upper left', bbox_to_anchor=(0, 1))
+plt.grid()
+plt.show()
+
+#######################################
+
+fig = plt.figure()
+ax = plt.subplot(111)
+ax.plot(C_freq, altitude, color='red')
+ax.plot(C_freq2, altitude, color='blue')
+ax.set_xscale('log')
+plt.xlabel('Collision Frequency')
+plt.ylabel('Altitude (km)')
+plt.title('Mean Collision Frequency with Altitude')
+ax.legend()
+red_patch = matplotlib.patches.Patch(color='red', label='F10.7 = 75.5')
+blue_patch = matplotlib.patches.Patch(color='blue', label='F10.7 = 188.0')
+plt.legend(handles=[red_patch, blue_patch], loc='upper right', bbox_to_anchor=(1, 1))
+plt.grid()
+plt.show()
+
+fig = plt.figure()
+ax = plt.subplot(111)
+ax.plot(MFP/1000, altitude, color='red')
+ax.plot(MFP2/1000, altitude, color='blue')
+ax.set_xscale('log')
+plt.xlabel('Mean Free Path [km]')
+plt.ylabel('Altitude (km)')
+plt.title('Mean Free Path with Altitude')
+ax.legend()
+red_patch = matplotlib.patches.Patch(color='red', label='F10.7 = 75.5')
+blue_patch = matplotlib.patches.Patch(color='blue', label='F10.7 = 188.0')
+plt.legend(handles=[red_patch, blue_patch], loc='upper left', bbox_to_anchor=(0, 1))
+plt.grid()
+plt.show()
+
+fig = plt.figure()
+ax = plt.subplot(111)
+ax.plot(d_avg, altitude, color='red')
+ax.plot(d_avg2, altitude, color='blue')
+#ax.set_xscale('log')
+plt.xlabel('Molecular Diameter [m]')
+plt.ylabel('Altitude (km)')
+plt.title('Mean Molecular Diameter with Altitude')
+ax.legend()
+red_patch = matplotlib.patches.Patch(color='red', label='F10.7 = 75.5')
+blue_patch = matplotlib.patches.Patch(color='blue', label='F10.7 = 188.0')
+plt.legend(handles=[red_patch, blue_patch], loc='upper right', bbox_to_anchor=(1, 1))
+plt.grid()
+plt.show()
+
+fig = plt.figure()
+ax = plt.subplot(111)
+ax.plot(Molecular_speed/1000, altitude, color='red')
+ax.plot(Molecular_speed2/1000, altitude, color='blue')
+#ax.set_xscale('log')
+plt.xlabel('Molecular Speed [km/s]')
+plt.ylabel('Altitude (km)')
+plt.title('Mean Molecular Speed with Altitude')
+ax.legend()
+red_patch = matplotlib.patches.Patch(color='red', label='F10.7 = 75.5')
+blue_patch = matplotlib.patches.Patch(color='blue', label='F10.7 = 188.0')
+plt.legend(handles=[red_patch, blue_patch], loc='upper left', bbox_to_anchor=(0, 1))
+plt.grid()
+plt.show()
