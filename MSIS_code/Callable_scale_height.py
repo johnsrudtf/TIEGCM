@@ -61,7 +61,7 @@ def Scale_Height(lat, lon, dn, altitude):
         Hp_n2[n] = k*Tn[n]/(.0280134/Av*g)/1000
         Hp_o1[n] = k*Tn[n]/(.016/Av*g)/1000
     
-        He[n] = result.nn['HE']*.004003/Av
+        He[n] = result.nn['HE']*.004003/Av #kg/cm^3
         N2[n] = result.nn['N2']*.0280134/Av
         O1[n] = result.nn['O']*.016/Av
     
@@ -74,21 +74,21 @@ def Scale_Height(lat, lon, dn, altitude):
     #Finds gradient with three point gradient technique
     for i in range(0,n,1):
         if i==0: #First Point
-            coeff1 = (2*m[1]-m[2]-m[3])/((m[1]-m[2]*1.0)*(m[1]-m[3]*1.0))
-            coeff2 = (2*m[1]-m[1]-m[3])/((m[2]-m[1]*1.0)*(m[2]-m[3]*1.0))
-            coeff3 = (2*m[1]-m[1]-m[2])/((m[3]-m[1]*1.0)*(m[3]-m[2]*1.0))
+            coeff1 = (2.0*m[1]-m[2]-m[3])/((m[1]-m[2]*1.0)*(m[1]-m[3]*1.0))
+            coeff2 = (2.0*m[1]-m[1]-m[3])/((m[2]-m[1]*1.0)*(m[2]-m[3]*1.0))
+            coeff3 = (2.0*m[1]-m[1]-m[2])/((m[3]-m[1]*1.0)*(m[3]-m[2]*1.0))
     
-            H_tn[1] = 1/Tn[1]*(Tn[1]*coeff1+Tn[2]*coeff2+Tn[3]*coeff3)
+            H_tn[1] = 1.0/Tn[1]*(Tn[1]*coeff1+Tn[2]*coeff2+Tn[3]*coeff3)
             H_mass[1] = -1/Mbar[1]*(Mbar[1]*coeff1+Mbar[2]*coeff2\
                   +Mbar[3]*coeff3)
     
         if i==n-1: #Last point
-            coeff1 = (2*m[i]-m[i-1]-m[i])/((m[i-2]-m[i-1]*1.0)*(m[i-2]-m[i]*1.0))
-            coeff2 = (2*m[i]-m[i-2]-m[i])/((m[i-1]-m[i-2]*1.0)*(m[i-1]-m[i]*1.0))
-            coeff3 = (2*m[i]-m[i-2]-m[i-1])/((m[i]-m[i-2]*1.0)*(m[i]-m[i-1]*1.0))
+            coeff1 = (2.0*m[i]-m[i-1]-m[i])/((m[i-2]-m[i-1]*1.0)*(m[i-2]-m[i]*1.0))
+            coeff2 = (2.0*m[i]-m[i-2]-m[i])/((m[i-1]-m[i-2]*1.0)*(m[i-1]-m[i]*1.0))
+            coeff3 = (2.0*m[i]-m[i-2]-m[i-1])/((m[i]-m[i-2]*1.0)*(m[i]-m[i-1]*1.0))
     
-            H_tn[i] = 1/Tn[i]*(Tn[i-2]*coeff1+Tn[i-1]*coeff2+Tn[i]*coeff3)
-            H_mass[i] = -1/Mbar[i]*(Mbar[i-2]*coeff1+Mbar[i-1]*coeff2\
+            H_tn[i] = 1.0/Tn[i]*(Tn[i-2]*coeff1+Tn[i-1]*coeff2+Tn[i]*coeff3)
+            H_mass[i] = -1.0/Mbar[i]*(Mbar[i-2]*coeff1+Mbar[i-1]*coeff2\
                   +Mbar[i]*coeff3)
     
         else: #Middle Points

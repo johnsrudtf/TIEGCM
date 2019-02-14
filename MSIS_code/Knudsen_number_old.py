@@ -55,10 +55,13 @@ Radius_N2 = 364/2.0
 Radius_Ar = 340/2.0
 R_gas = 8.3144598 #Universal gas constant
 
+lam = np.zeros(len(m))
+lam2 = np.zeros(len(m))
+
 #Iterate through altitudes in range m
 for x in m:
-    pt = Point(dn, lat, lon, 400)
-    pt2 = Point(dn2, lat, lon, 400)
+    pt = Point(dn, lat, lon, x)
+    pt2 = Point(dn2, lat, lon, x)
     result = pt.run_msis()
     result2 = pt2.run_msis()
     
@@ -91,12 +94,12 @@ for x in m:
     d_avg = (result.nn['HE']/n_dens_tot_new*260+result.nn['N2']/n_dens_tot_new*364\
         +result.nn['O2']/n_dens_tot_new*346+result.nn['AR']/n_dens_tot_new*340)\
         *10**(-12)
-    lam = 1/(math.sqrt(2)*math.pi*d_avg**2*n_dens_tot_new*10**(6))
-    Old_collision_freq = Molecular_speed/lam
+    #lam = 1/(math.sqrt(2)*math.pi*d_avg**2*n_dens_tot_new*10**(6))
+    #Old_collision_freq = Molecular_speed/lam
 
-    lam = Molecular_speed/Coll_freq_avg
+    lam[n] = Molecular_speed/Coll_freq_avg
     L = 1 #in meters. Chosen characteristic length
-    Kn1[n] = lam/L
+    Kn1[n] = lam[n]/L
     
     g = g0*R**2/(R+x)**2
     m_dens1 = (result.nn['HE']*.004003/Av+result.nn['N2']*.0280134/Av\
@@ -106,7 +109,7 @@ for x in m:
     M1[n] = m_dens1/(n_dens_tot)
     T1[n] = result.Tn_msis
     H1[n] = k*T1[n]/(M1[n]*g)
-    Kn1At[n] = lam/(H1[n])
+    Kn1At[n] = lam[n]/(H1[n])
     
     n_dens_tot2 = result2.nn['HE']+result2.nn['N2']+result2.nn['O2'] \
         +result2.nn['AR']+result2.nn['H']+result2.nn['O']+result2.nn['N']# number density per cm^3
@@ -136,11 +139,11 @@ for x in m:
     d_avg = (result2.nn['HE']/n_dens_tot2_new*260+result2.nn['N2']/n_dens_tot2_new*364\
         +result2.nn['O2']/n_dens_tot2_new*346+result2.nn['AR']/n_dens_tot2_new*340)\
         *10**(-12)
-    lam = 1/(math.sqrt(2)*math.pi*d_avg**2*n_dens_tot2_new*10**(6))
-    Old_collision_freq2 = Molecular_speed2/lam
+    #lam = 1/(math.sqrt(2)*math.pi*d_avg**2*n_dens_tot2_new*10**(6))
+    #Old_collision_freq2 = Molecular_speed2/lam
 
-    lam2 = Molecular_speed2/Coll_freq_avg2
-    Kn2[n] = lam2/L    
+    lam2[n] = Molecular_speed2/Coll_freq_avg2
+    Kn2[n] = lam2[n]/L    
    
     m_dens2 = (result2.nn['HE']*.004003/Av+result2.nn['N2']*.0280134/Av\
     +result2.nn['O2']*.032/Av+result2.nn['AR']*.039948/Av+result2.nn['N']\
@@ -149,7 +152,7 @@ for x in m:
     M2[n] = m_dens2/(n_dens_tot2)
     T2[n] = result2.Tn_msis
     H2[n] = k*T2[n]/(M2[n]*g) # in meters
-    Kn2At[n] = lam2/(H2[n])
+    Kn2At[n] = lam2[n]/(H2[n])
     
     #Helium Density plots
     He1 = result.nn['HE']*.004003/Av 
@@ -185,4 +188,10 @@ black_dash = matplotlib.lines.Line2D([], [], ls='dashed', color='black', label='
 plt.legend(handles=[red_patch, blue_patch, black_line, black_dash], loc='upper left', bbox_to_anchor=(0, 1))
 plt.grid()
 plt.show()
+
+plt.plot(lam,m)
+plt.xscale('log')
+
+plt.plot(lam2,m)
+plt.xscale('log')
 
