@@ -25,8 +25,8 @@ if feat == 3:
     lat = 5. #Day Feature
     lon = -95. #Day Feature
 
-lat = 0.
-lon = -80.
+#lat = 0.
+#lon = -80.
 
 m = range(95, 600, 5) #Set altitude range and step size (km)
 Densfrac = np.zeros(len(m))
