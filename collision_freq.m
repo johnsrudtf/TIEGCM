@@ -1,3 +1,4 @@
+
 function [V_st] = collision_freq(n1,n2,m1,m2,r1,r2,T1,T2)
 %Finding collision frequency between two gas species where
 % V_st = V_1,2

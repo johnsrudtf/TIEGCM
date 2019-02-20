@@ -1,3 +1,4 @@
+
 %Author: Torfinn Johnsrud
 %Created: Feb. 6 2019
 
@@ -49,7 +50,7 @@ if pdrag == 0
     filename = 'HSUVW.tiegcm2.0_dres.nodragtest_ctrSS_f107_180_001.nc';
     id = 'no Ion Drag';
 end
-den = ncread(filename,'DEN'); %g/cm^3
+den = ncread(filename,'DEN');
 zg = ncread(filename,'ZG'); %Geometric altitude
 he = ncread(filename,'HE'); %Units of mass mixing ratio
 n2 = ncread(filename,'N2');
@@ -106,7 +107,7 @@ wn_alt_1 = squeeze(wn_tp1(:,i_index,:));
 
 % -----Condense to selected Longitude-----
 i_index = find(lon==lon_want);
-den_alt = squeeze(den_alt_1(i_index,:));%g/cm^3
+den_alt = squeeze(den_alt_1(i_index,:));
 he_alt = squeeze(he_alt_1(i_index,:));
 N2_alt = squeeze(N2_alt_1(i_index,:));
 O1_alt = squeeze(O1_alt_1(i_index,:));
@@ -119,11 +120,10 @@ mbar_alt = squeeze(mbar_alt_1(i_index,:));%kg/kmol
 wn_alt = squeeze(wn_alt_1(i_index,:));
 
 % Number Density
-nhe = he_alt.*den_alt*1e3/4/atom_unit; %helium number density per m^3
-nhe = he_alt.*den_alt*(atom_unit*4*1000)^(-1)*10^6;
-nN2 = N2_alt.*den_alt*(atom_unit*28*1000)^-1*10^6; % N2 number density per m^3
-nO1 = O1_alt.*den_alt*(atom_unit*16*1000)^-1*10^6; % O1 number density per m^3
-nO2 = O2_alt.*den_alt*(atom_unit*32*1000)^-1*10^6; % O2 number density per m^3
+nhe = he_alt.*den_alt*1e3/4/atom_unit;   %helium number density per m^3
+nN2 = N2_alt.*den_alt*1e3/28.01/atom_unit; % N2 number density per m^3
+nO1 = O1_alt.*den_alt*1e3/16/atom_unit; % O1 number density per m^3
+nO2 = O2_alt.*den_alt*1e3/32/atom_unit; % O2 number density per m^3
 % nAR = AR_alt.*den_alt*1e3/39.95/atom_unit; % Argon Number Density per m^3
 
 %Mass Density
@@ -146,7 +146,7 @@ points = length(tn_alt);
 meanmass = mbar_alt/1000;
 
 %%-----Diffusion Calculation-----%%
-Mass_O2 = 32.00;%AMU
+Mass_O2 = 32.00;
 Mass_He = 4.00;
 Mass_N2 = 28.01;
 Mass_Ar = 39.95;
@@ -155,23 +155,22 @@ Radius_He = 260/2.0;
 Radius_N2 = 364/2.0;
 Radius_Ar = 340/2.0;
 
-Diff_denom_He = 4*atom_unit*(collision_freq(nhe, nN2, Mass_He, Mass_N2, Radius_He, Radius_N2, tn_alt, tn_alt)+...
+Diff_denom_He = mmw_he*(collision_freq(nhe, nN2, Mass_He, Mass_N2, Radius_He, Radius_N2, tn_alt, tn_alt)+...
     collision_freq(nhe, nO2, Mass_He, Mass_O2, Radius_He, Radius_O2, tn_alt, tn_alt));
 Diffusion_coeff_He = k*tn_alt./Diff_denom_He;
 
-Diff_denom_O2 = 32*atom_unit*(collision_freq(nO2, nN2, Mass_O2, Mass_N2, Radius_O2, Radius_N2, tn_alt, tn_alt)+...
+Diff_denom_O2 = mmw_O2*(collision_freq(nO2, nN2, Mass_O2, Mass_N2, Radius_O2, Radius_N2, tn_alt, tn_alt)+...
     collision_freq(nO2, nhe, Mass_O2, Mass_He, Radius_O2, Radius_He, tn_alt, tn_alt));
 Diffusion_coeff_O2 = k*tn_alt./Diff_denom_O2;
 
-Diff_denom_N2 = 28*atom_unit*(collision_freq(nN2, nO2, Mass_N2, Mass_O2, Radius_N2, Radius_O2, tn_alt, tn_alt)+...
+Diff_denom_N2 = mmw_O2*(collision_freq(nN2, nO2, Mass_N2, Mass_O2, Radius_N2, Radius_O2, tn_alt, tn_alt)+...
     collision_freq(nN2, nhe, Mass_N2, Mass_He, Radius_N2, Radius_He, tn_alt, tn_alt));
 Diffusion_coeff_N2 = k*tn_alt./Diff_denom_N2;
 
-plot(Diffusion_coeff_He(1:end-30),geom_alt(1:end-30));
+plot(Diffusion_coeff_He(1:end-12),geom_alt(1:end-12));
 hold on
-plot(Diffusion_coeff_O2(1:end-30),geom_alt(1:end-30));
-plot(Diffusion_coeff_N2(1:end-30),geom_alt(1:end-30));
-set(gca, 'XScale', 'log')
+plot(Diffusion_coeff_O2(1:end-10),geom_alt(1:end-10));
+plot(Diffusion_coeff_N2(1:end-10),geom_alt(1:end-10));
 xlabel('Diffusion Coefficient');
 ylabel('Altitude (km)');
 title('Molecular Diffusion Coefficient');
