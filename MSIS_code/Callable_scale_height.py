@@ -29,6 +29,7 @@ def Scale_Height(lat, lon, dn, altitude):
     Hp_he = np.zeros(len(m))
     Hp_n2 = np.zeros(len(m))
     Hp_o1 = np.zeros(len(m))
+    Density_total = np.zeros(len(m))
     
     k = 1.3806*10**(-23) #Boltzmann's constant
     g0 = 9.807 #m/s^2
@@ -51,7 +52,8 @@ def Scale_Height(lat, lon, dn, altitude):
         m_dens1 = (result.nn['HE']*.004003/Av+result.nn['N2']*.0280134/Av\
                    +result.nn['O2']*.032/Av+result.nn['AR']*.039948/Av)#+result.nn['N']\
                    #*.01401/Av+result.nn['H']*.001/Av+result.nn['O']*.016/Av)#kg/cm^3
-        Mbar[n] = m_dens1*Av*1000/(n_dens_tot) #kg/kmol
+        Density_total[n] = m_dens1 #kg/cm^3
+        Mbar[n] = m_dens1*Av*1000/(n_dens_tot) #kg/kmol or g/mol
         Tn[n] = result.Tn_msis
     
         #Follows form of kT/mg for pressure scale height
@@ -64,6 +66,7 @@ def Scale_Height(lat, lon, dn, altitude):
         He[n] = result.nn['HE']*.004003/Av #kg/cm^3
         N2[n] = result.nn['N2']*.0280134/Av
         O1[n] = result.nn['O']*.016/Av
+        
     
         n = n+1
         
@@ -107,33 +110,39 @@ def Scale_Height(lat, lon, dn, altitude):
     lnHe = np.log(He)
     lnN2 = np.log(N2)
     lnO1 = np.log(O1)
+    lnDentot = np.log(Density_total)
     H_he_star = np.zeros(len(m))
     H_n2_star = np.zeros(len(m))
     H_o1_star = np.zeros(len(m))
+    H_dentot_star = np.zeros(len(m))
     for i in range(0,n,1):
         if i==0:
             H_he_star[i] = -(lnHe[2]-lnHe[1])/(m[2]-m[1])
             H_n2_star[i] = -(lnN2[2]-lnN2[1])/(m[2]-m[1])
             H_o1_star[i] = -(lnO1[2]-lnO1[1])/(m[2]-m[1])
+            H_dentot_star[i] = -(lnDentot[2]-lnDentot[1])/(m[2]-m[1])
         if i==len(m)-1:
             H_he_star[i] = -(lnHe[i]-lnHe[i-1])/(m[i]-m[i-1])
             H_n2_star[i] = -(lnN2[i]-lnN2[i-1])/(m[i]-m[i-1])
             H_o1_star[i] = -(lnO1[i]-lnO1[i-1])/(m[i]-m[i-1])
+            H_dentot_star[i] = -(lnDentot[i]-lnDentot[i-1])/(m[i]-m[i-1])
         else:
             H_he_star[i] = -(lnHe[i+1]-lnHe[i-1])/(m[i+1]-m[i-1])
             H_n2_star[i] = -(lnN2[i+1]-lnN2[i-1])/(m[i+1]-m[i-1])
             H_o1_star[i] = -(lnO1[i+1]-lnO1[i-1])/(m[i+1]-m[i-1])
+            H_dentot_star[i] = -(lnDentot[i+1]-lnDentot[i-1])/(m[i+1]-m[i-1])
     
     H_he_star = 1./H_he_star
     H_n2_star = 1./H_n2_star
     H_o1_star = 1./H_o1_star
+    H_tot_star = 1./H_dentot_star
     
     H_he_diff = 1./(1./H_temp_he+1./Hp_he)
     H_n2_diff = 1./(1./H_temp+1./Hp_n2)
     H_o1_diff = 1./(1./H_temp+1./Hp_o1)
-    H_tot = 1./(1./H_temp+1./Hp_mbar+1./H_mass)
+    H_tot_diff = 1./(1./H_temp+1./Hp_mbar+1./H_mass)
     
-    return (H_tot, H_he_star, H_n2_star, H_o1_star)#Return scale heights in units (km)
+    return (H_tot_diff, H_tot_star, H_he_star, H_n2_star, H_o1_star)#Return scale heights in units (km)
 
 
 def Mean_free_path(lat, lon, dn, altitude, scale):

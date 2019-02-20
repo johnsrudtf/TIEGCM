@@ -89,9 +89,15 @@ for x in m:
     Coll_freq_10 = collision_freq(result.nn['AR'], result.nn['N2'], Mass_Ar, Mass_N2, Radius_Ar, Radius_N2, result.Tn_msis, result.Tn_msis)
     Coll_freq_11 = collision_freq(result.nn['AR'], result.nn['O2'], Mass_Ar, Mass_O2, Radius_Ar, Radius_O2, result.Tn_msis, result.Tn_msis)
     Coll_freq_12 = collision_freq(result.nn['AR'], result.nn['HE'], Mass_Ar, Mass_He, Radius_Ar, Radius_He, result.Tn_msis, result.Tn_msis)
-    Coll_freq_total = Coll_freq_1+Coll_freq_2+Coll_freq_3+Coll_freq_4+Coll_freq_5+Coll_freq_6+Coll_freq_7+Coll_freq_8+Coll_freq_9+Coll_freq_10\
-        +Coll_freq_11+Coll_freq_12
-    Coll_freq_avg[n] = Coll_freq_total/12
+    Coll_freq_total = result.nn['HE']/n_dens_tot_new*(Coll_freq_4+Coll_freq_9+Coll_freq_12)\
+        +result.nn['N2']/n_dens_tot_new*(Coll_freq_1+Coll_freq_7+Coll_freq_10)\
+        +result.nn['O2']/n_dens_tot_new*(Coll_freq_2+Coll_freq_5+Coll_freq_11)\
+        +result.nn['AR']/n_dens_tot_new*(Coll_freq_3+Coll_freq_6+Coll_freq_8)
+#    Coll_freq_total = 1.0/12.0*(Coll_freq_1+Coll_freq_2+Coll_freq_3)\
+#        +1.0/12.0*(Coll_freq_4+Coll_freq_5+Coll_freq_6)\
+#        +1.0/12.0*(Coll_freq_7+Coll_freq_8+Coll_freq_9)\
+#        +1.0/12.0*(Coll_freq_10+Coll_freq_11+Coll_freq_12)
+    Coll_freq_avg[n] = Coll_freq_total
     Molecular_speed1[n] = math.sqrt((8*R_gas*result.Tn_msis)/(math.pi*M1[n]))#m/s
     lam[n] = Molecular_speed1[n]/Coll_freq_avg[n]
     
@@ -115,19 +121,26 @@ for x in m:
     Coll_freq_total2 = Coll_freq_1+Coll_freq_2+Coll_freq_3+Coll_freq_4+Coll_freq_5+Coll_freq_6+Coll_freq_7+Coll_freq_8+Coll_freq_9+Coll_freq_10\
         +Coll_freq_11+Coll_freq_12
     Coll_freq_avg2[n] = Coll_freq_total2/12
+    Coll_freq_total2 = result2.nn['HE']/n_dens_tot2_new*(Coll_freq_4+Coll_freq_9+Coll_freq_12)\
+        +result2.nn['N2']/n_dens_tot2_new*(Coll_freq_1+Coll_freq_7+Coll_freq_10)\
+        +result2.nn['O2']/n_dens_tot2_new*(Coll_freq_2+Coll_freq_5+Coll_freq_11)\
+        +result2.nn['AR']/n_dens_tot2_new*(Coll_freq_3+Coll_freq_6+Coll_freq_8)
+    Coll_freq_avg2[n] = Coll_freq_total2
     Molecular_speed2[n] = math.sqrt((8*R_gas*result2.Tn_msis)/(math.pi*M2[n]))#m/s
     lam2[n] = Molecular_speed2[n]/Coll_freq_avg2[n]  
+    
     n = n+1
     
 F107_1 = result.f107  
 F107_2 = result2.f107
 
-[H_tot, H_he_star, H_n2_star, H_o1_star] = Scale_Height(lat, lon, dn, m)
-[H_tot2, H_he_star2, H_n2_star2, H_o1_star2] = Scale_Height(lat, lon, dn2, m)
-H_tot = H_tot*1000 #Change from km to m
-H_tot2 = H_tot2*1000
-Kn1At = np.true_divide(lam,H_tot)
-Kn2At = np.true_divide(lam2,H_tot2)
+[H_tot_diff, H_tot_star, H_he_star, H_n2_star, H_o1_star] = Scale_Height(lat, lon, dn, m)
+[H_tot2_diff, H_tot2_star, H_he_star2, H_n2_star2, H_o1_star2] = Scale_Height(lat, lon, dn2, m)
+
+H_tot_star = H_tot_star*1000 #Change from km to m
+H_tot2_star = H_tot2_star*1000
+Kn1At = np.true_divide(lam,H_tot_star)
+Kn2At = np.true_divide(lam2,H_tot2_star)
 #Plot Knudsen number as a function of altitude with charictaristic length 
 #of 1 meter
 #==============================================================================
@@ -171,8 +184,8 @@ plt.show()
 
 fig3 = plt.figure()
 ax = plt.subplot(111)
-line1, = ax.plot(H_tot/1000, m, color='red')
-line2, = ax.plot(H_tot2/1000, m, color='blue')
+line1, = ax.plot(H_tot_star/1000, m, color='red')
+line2, = ax.plot(H_tot2_star/1000, m, color='blue')
 
 plt.xlabel('Scale Height (km)')
 plt.ylabel('Altitude (km)')
